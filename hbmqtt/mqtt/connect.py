@@ -158,9 +158,7 @@ class ConnectPayload(MQTTPayload):
         "client_id_is_random",
     )
 
-    def __init__(
-        self, client_id=None, will_topic=None, will_message=None, username=None, password=None
-    ):
+    def __init__(self, client_id=None, will_topic=None, will_message=None, username=None, password=None):
         super().__init__()
         self.client_id_is_random = False
         self.client_id = client_id
@@ -378,9 +376,7 @@ class ConnectPacket(MQTTPacket):
             header = MQTTFixedHeader(CONNECT, 0x00)
         else:
             if fixed.packet_type is not CONNECT:
-                raise HBMQTTException(
-                    "Invalid fixed packet type %s for ConnectPacket init" % fixed.packet_type
-                )
+                raise HBMQTTException("Invalid fixed packet type %s for ConnectPacket init" % fixed.packet_type)
             header = fixed
         super().__init__(header)
         self.variable_header = vh

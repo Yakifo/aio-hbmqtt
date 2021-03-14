@@ -29,9 +29,7 @@ class AnonymousAuthPlugin(BaseAuthPlugin):
     async def authenticate(self, *args, **kwargs):
         authenticated = super().authenticate(*args, **kwargs)
         if authenticated:
-            allow_anonymous = self.auth_config.get(
-                "allow-anonymous", True
-            )  # allow anonymous by default
+            allow_anonymous = self.auth_config.get("allow-anonymous", True)  # allow anonymous by default
             if allow_anonymous:
                 authenticated = True
                 self.context.logger.debug("Authentication success: config allows anonymous")
@@ -41,13 +39,9 @@ class AnonymousAuthPlugin(BaseAuthPlugin):
                     authenticated = True if session.username else False
                     if self.context.logger.isEnabledFor(logging.DEBUG):
                         if authenticated:
-                            self.context.logger.debug(
-                                "Authentication success: session has a non empty username"
-                            )
+                            self.context.logger.debug("Authentication success: session has a non empty username")
                         else:
-                            self.context.logger.debug(
-                                "Authentication failure: session has an empty username"
-                            )
+                            self.context.logger.debug("Authentication failure: session has an empty username")
                 except KeyError:
                     self.context.logger.warning("Session informations not available")
                     authenticated = False
@@ -72,12 +66,8 @@ class FileAuthPlugin(BaseAuthPlugin):
                             (username, pwd_hash) = line.split(sep=":", maxsplit=3)
                             if username:
                                 self._users[username] = pwd_hash
-                                self.context.logger.debug(
-                                    "user %s , hash=%s" % (username, pwd_hash)
-                                )
-                self.context.logger.debug(
-                    "%d user(s) read from file %s" % (len(self._users), password_file)
-                )
+                                self.context.logger.debug("user %s , hash=%s" % (username, pwd_hash))
+                self.context.logger.debug("%d user(s) read from file %s" % (len(self._users), password_file))
             except FileNotFoundError:
                 self.context.logger.warning("Password file %s not found" % password_file)
         else:

@@ -39,16 +39,12 @@ class TestPluginManager(unittest.TestCase):
     def setUp(self):
         self.loop = asyncio.new_event_loop()
 
-    @pytest.mark.xfail(
-        reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False
-    )
+    @pytest.mark.xfail(reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False)
     def test_load_plugin(self):
         manager = PluginManager("hbmqtt.test.plugins", context=None)
         assert len(manager._plugins) > 0
 
-    @pytest.mark.xfail(
-        reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False
-    )
+    @pytest.mark.xfail(reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False)
     def test_fire_event(self):
         async def fire_event():
             await manager.fire_event("test")
@@ -60,9 +56,7 @@ class TestPluginManager(unittest.TestCase):
         plugin = manager.get_plugin("event_plugin")
         assert plugin.object.test_flag
 
-    @pytest.mark.xfail(
-        reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False
-    )
+    @pytest.mark.xfail(reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False)
     def test_fire_event_wait(self):
         async def fire_event():
             await manager.fire_event("test", wait=True)
@@ -73,9 +67,7 @@ class TestPluginManager(unittest.TestCase):
         plugin = manager.get_plugin("event_plugin")
         assert plugin.object.test_flag
 
-    @pytest.mark.xfail(
-        reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False
-    )
+    @pytest.mark.xfail(reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False)
     def test_map_coro(self):
         async def call_coro():
             await manager.map_plugin_coro("test_coro")
@@ -85,9 +77,7 @@ class TestPluginManager(unittest.TestCase):
         plugin = manager.get_plugin("event_plugin")
         assert plugin.object.test_coro
 
-    @pytest.mark.xfail(
-        reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False
-    )
+    @pytest.mark.xfail(reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False)
     def test_map_coro_return(self):
         async def call_coro():
             return await manager.map_plugin_coro("ret_coro")
@@ -97,9 +87,7 @@ class TestPluginManager(unittest.TestCase):
         plugin = manager.get_plugin("event_plugin")
         self.assertEqual(ret[plugin], "TEST")
 
-    @pytest.mark.xfail(
-        reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False
-    )
+    @pytest.mark.xfail(reason="see https://github.com/Yakifo/aio-hbmqtt/issues/15", strict=False)
     def test_map_coro_filter(self):
         """
         Run plugin coro but expect no return as an empty filter is given

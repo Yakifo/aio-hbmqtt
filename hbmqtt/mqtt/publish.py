@@ -21,16 +21,12 @@ class PublishVariableHeader(MQTTVariableHeader):
     def __init__(self, topic_name: str, packet_id: int = None):
         super().__init__()
         if "*" in topic_name:
-            raise MQTTException(
-                "[MQTT-3.3.2-2] Topic name in the PUBLISH Packet MUST NOT contain wildcard characters."
-            )
+            raise MQTTException("[MQTT-3.3.2-2] Topic name in the PUBLISH Packet MUST NOT contain wildcard characters.")
         self.topic_name = topic_name
         self.packet_id = packet_id
 
     def __repr__(self):
-        return type(self).__name__ + "(topic={0}, packet_id={1})".format(
-            self.topic_name, self.packet_id
-        )
+        return type(self).__name__ + "(topic={0}, packet_id={1})".format(self.topic_name, self.packet_id)
 
     def to_bytes(self):
         out = bytearray()
@@ -99,9 +95,7 @@ class PublishPacket(MQTTPacket):
             header = MQTTFixedHeader(PUBLISH, 0x00)
         else:
             if fixed.packet_type is not PUBLISH:
-                raise HBMQTTException(
-                    "Invalid fixed packet type %s for PublishPacket init" % fixed.packet_type
-                )
+                raise HBMQTTException("Invalid fixed packet type %s for PublishPacket init" % fixed.packet_type)
             header = fixed
 
         super().__init__(header)

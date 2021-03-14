@@ -19,9 +19,7 @@ class UnsubackPacket(MQTTPacket):
             header = MQTTFixedHeader(UNSUBACK, 0x00)
         else:
             if fixed.packet_type is not UNSUBACK:
-                raise HBMQTTException(
-                    "Invalid fixed packet type %s for UnsubackPacket init" % fixed.packet_type
-                )
+                raise HBMQTTException("Invalid fixed packet type %s for UnsubackPacket init" % fixed.packet_type)
             header = fixed
 
         super().__init__(header)

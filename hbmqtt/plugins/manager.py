@@ -141,10 +141,7 @@ class PluginManager:
 
                     task.add_done_callback(clean_fired_events)
                 except AssertionError:
-                    self.logger.error(
-                        "Method '%s' on plugin '%s' is not a coroutine"
-                        % (event_method_name, plugin.name)
-                    )
+                    self.logger.error("Method '%s' on plugin '%s' is not a coroutine" % (event_method_name, plugin.name))
 
         self._fired_events.extend(tasks)
         if wait:
@@ -176,10 +173,7 @@ class PluginManager:
                         tasks.append(self._schedule_coro(coro_instance))
                         plugins_list.append(plugin)
                     except AssertionError:
-                        self.logger.error(
-                            "Method '%r' on plugin '%s' is not a coroutine"
-                            % (coro, plugin.name)
-                        )
+                        self.logger.error("Method '%r' on plugin '%s' is not a coroutine" % (coro, plugin.name))
         if tasks:
             ret_list = await asyncio.gather(*tasks, loop=self._loop)
             # Create result map plugin=>ret

@@ -205,7 +205,7 @@ class MQTTClient:
         Reconnect a previously connected broker.
 
         Reconnection tries to establish a network connection and send a `CONNECT <http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718028>`_ message.
-        Retries interval and attempts can be controled with the ``reconnect_max_interval`` and ``reconnect_retries`` configuration parameters.
+        Retries interval and attempts can be controlled with the ``reconnect_max_interval`` and ``reconnect_retries`` configuration parameters.
 
         This method is a *coroutine*.
 
@@ -234,9 +234,7 @@ class MQTTClient:
             except BaseException as e:
                 self.logger.warning("Reconnection attempt failed: %r" % e)
                 if reconnect_retries >= 0 and nb_attempt > reconnect_retries:
-                    self.logger.error(
-                        "Maximum number of connection attempts reached. Reconnection aborted"
-                    )
+                    self.logger.error("Maximum number of connection attempts reached. Reconnection aborted")
                     raise ConnectException("Too many connection attempts failed")
                 exp = 2 ** nb_attempt
                 delay = exp if exp < reconnect_max_interval else reconnect_max_interval
@@ -246,9 +244,7 @@ class MQTTClient:
 
     async def _do_connect(self):
         return_code = await self._connect_coro()
-        self._disconnect_task = asyncio.ensure_future(
-            self.handle_connection_close(), loop=self._loop
-        )
+        self._disconnect_task = asyncio.ensure_future(self.handle_connection_close(), loop=self._loop)
         return return_code
 
     @mqtt_connected
@@ -265,8 +261,7 @@ class MQTTClient:
             await self._handler.mqtt_ping()
         else:
             self.logger.warning(
-                "MQTT PING request incompatible with current session state '%s'"
-                % self.session.transitions.state
+                "MQTT PING request incompatible with current session state '%s'" % self.session.transitions.state
             )
 
     @mqtt_connected
@@ -305,9 +300,7 @@ class MQTTClient:
             return _qos, _retain
 
         (app_qos, app_retain) = get_retain_and_qos()
-        return await self._handler.mqtt_publish(
-            topic, message, app_qos, app_retain, ack_timeout
-        )
+        return await self._handler.mqtt_publish(topic, message, app_qos, app_retain, ack_timeout)
 
     @mqtt_connected
     async def subscribe(self, topics):
@@ -361,9 +354,7 @@ class MQTTClient:
         :return: instance of :class:`hbmqtt.session.ApplicationMessage` containing received message information flow.
         :raises: :class:`asyncio.TimeoutError` if timeout occurs before a message is delivered
         """
-        deliver_task = asyncio.ensure_future(
-            self._handler.mqtt_deliver_next_message(), loop=self._loop
-        )
+        deliver_task = asyncio.ensure_future(self._handler.mqtt_deliver_next_message(), loop=self._loop)
         self.client_tasks.append(deliver_task)
         self.logger.debug("Waiting message delivery")
         done, pending = await asyncio.wait(
@@ -391,12 +382,8 @@ class MQTTClient:
         uri_attributes = urlparse(self.session.broker_uri)
         scheme = uri_attributes.scheme
         secure = True if scheme in ("mqtts", "wss") else False
-        self.session.username = (
-            self.session.username if self.session.username else uri_attributes.username
-        )
-        self.session.password = (
-            self.session.password if self.session.password else uri_attributes.password
-        )
+        self.session.username = self.session.username if self.session.username else uri_attributes.username
+        self.session.password = self.session.password if self.session.password else uri_attributes.password
         self.session.remote_address = uri_attributes.hostname
         self.session.remote_port = uri_attributes.port
         if scheme in ("mqtt", "mqtts") and not self.session.remote_port:
@@ -427,9 +414,7 @@ class MQTTClient:
             )
             if "certfile" in self.config and "keyfile" in self.config:
                 sc.load_cert_chain(self.config["certfile"], self.config["keyfile"])
-            if "check_hostname" in self.config and isinstance(
-                self.config["check_hostname"], bool
-            ):
+            if "check_hostname" in self.config and isinstance(self.config["check_hostname"], bool):
                 sc.check_hostname = self.config["check_hostname"]
             kwargs["ssl"] = sc
 
@@ -440,20 +425,13 @@ class MQTTClient:
             # Open connection
             if scheme in ("mqtt", "mqtts"):
                 conn_reader, conn_writer = await asyncio.open_connection(
-                    self.session.remote_address,
-                    self.session.remote_port,
-                    loop=self._loop,
-                    **kwargs
+                    self.session.remote_address, self.session.remote_port, loop=self._loop, **kwargs
                 )
                 reader = StreamReaderAdapter(conn_reader)
                 writer = StreamWriterAdapter(conn_writer)
             elif scheme in ("ws", "wss"):
                 websocket = await websockets.connect(
-                    self.session.broker_uri,
-                    subprotocols=["mqtt"],
-                    loop=self._loop,
-                    extra_headers=self.extra_headers,
-                    **kwargs
+                    self.session.broker_uri, subprotocols=["mqtt"], loop=self._loop, extra_headers=self.extra_headers, **kwargs
                 )
                 reader = WebSocketsReader(websocket)
                 writer = WebSocketsWriter(websocket)
@@ -471,17 +449,12 @@ class MQTTClient:
                 await self._handler.start()
                 self.session.transitions.connect()
                 self._connected_state.set()
-                self.logger.debug(
-                    "connected to %s:%s"
-                    % (self.session.remote_address, self.session.remote_port)
-                )
+                self.logger.debug("connected to %s:%s" % (self.session.remote_address, self.session.remote_port))
             return return_code
         except InvalidURI as iuri:
             self.logger.warning("connection failed: invalid URI '%s'" % self.session.broker_uri)
             self.session.transitions.disconnect()
-            raise ConnectException(
-                "connection failed: invalid URI '%s'" % self.session.broker_uri, iuri
-            )
+            raise ConnectException("connection failed: invalid URI '%s'" % self.session.broker_uri, iuri)
         except InvalidHandshake as ihs:
             self.logger.warning("connection failed: invalid websocket handshake")
             self.session.transitions.disconnect()
@@ -524,9 +497,7 @@ class MQTTClient:
             # Cancel client pending tasks
             cancel_tasks()
 
-    def _initsession(
-        self, uri=None, cleansession=None, cafile=None, capath=None, cadata=None
-    ) -> Session:
+    def _initsession(self, uri=None, cleansession=None, cafile=None, capath=None, cadata=None) -> Session:
         # Load config
         broker_conf = self.config.get("broker", dict()).copy()
         if uri:

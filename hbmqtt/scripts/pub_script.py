@@ -152,9 +152,7 @@ def main(*args, **kwargs):
     if arguments["-c"]:
         config = read_yaml_config(arguments["-c"])
     else:
-        config = read_yaml_config(
-            os.path.join(os.path.dirname(os.path.realpath(__file__)), "default_client.yaml")
-        )
+        config = read_yaml_config(os.path.join(os.path.dirname(os.path.realpath(__file__)), "default_client.yaml"))
         logger.debug("Using default configuration")
     loop = asyncio.get_event_loop()
 

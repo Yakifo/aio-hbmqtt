@@ -56,13 +56,7 @@ class TestFileAuthPlugin(unittest.TestCase):
     def test_allow(self):
         context = BaseContext()
         context.logger = logging.getLogger(__name__)
-        context.config = {
-            "auth": {
-                "password-file": os.path.join(
-                    os.path.dirname(os.path.realpath(__file__)), "passwd"
-                )
-            }
-        }
+        context.config = {"auth": {"password-file": os.path.join(os.path.dirname(os.path.realpath(__file__)), "passwd")}}
         s = Session()
         s.username = "user"
         s.password = "test"
@@ -73,13 +67,7 @@ class TestFileAuthPlugin(unittest.TestCase):
     def test_wrong_password(self):
         context = BaseContext()
         context.logger = logging.getLogger(__name__)
-        context.config = {
-            "auth": {
-                "password-file": os.path.join(
-                    os.path.dirname(os.path.realpath(__file__)), "passwd"
-                )
-            }
-        }
+        context.config = {"auth": {"password-file": os.path.join(os.path.dirname(os.path.realpath(__file__)), "passwd")}}
         s = Session()
         s.username = "user"
         s.password = "wrong password"
@@ -90,13 +78,7 @@ class TestFileAuthPlugin(unittest.TestCase):
     def test_unknown_password(self):
         context = BaseContext()
         context.logger = logging.getLogger(__name__)
-        context.config = {
-            "auth": {
-                "password-file": os.path.join(
-                    os.path.dirname(os.path.realpath(__file__)), "passwd"
-                )
-            }
-        }
+        context.config = {"auth": {"password-file": os.path.join(os.path.dirname(os.path.realpath(__file__)), "passwd")}}
         s = Session()
         s.username = "some user"
         s.password = "some password"

@@ -69,9 +69,7 @@ class ApplicationMessage:
         :param dup: force dup flag
         :return: :class:`hbmqtt.mqtt.publish.PublishPacket` built from ApplicationMessage instance attributes
         """
-        return PublishPacket.build(
-            self.topic, self.data, self.packet_id, dup, self.qos, self.retain
-        )
+        return PublishPacket.build(self.topic, self.data, self.packet_id, dup, self.qos, self.retain)
 
     def __eq__(self, other):
         return self.packet_id == other.packet_id
@@ -147,16 +145,10 @@ class Session:
     def _init_states(self):
         self.transitions = Machine(states=Session.states, initial="new")
         self.transitions.add_transition(trigger="connect", source="new", dest="connected")
-        self.transitions.add_transition(
-            trigger="connect", source="disconnected", dest="connected"
-        )
-        self.transitions.add_transition(
-            trigger="disconnect", source="connected", dest="disconnected"
-        )
+        self.transitions.add_transition(trigger="connect", source="disconnected", dest="connected")
+        self.transitions.add_transition(trigger="disconnect", source="connected", dest="disconnected")
         self.transitions.add_transition(trigger="disconnect", source="new", dest="disconnected")
-        self.transitions.add_transition(
-            trigger="disconnect", source="disconnected", dest="disconnected"
-        )
+        self.transitions.add_transition(trigger="disconnect", source="disconnected", dest="disconnected")
 
     @property
     def next_packet_id(self):
@@ -183,9 +175,7 @@ class Session:
         return self.retained_messages.qsize()
 
     def __repr__(self):
-        return type(self).__name__ + "(clientId={0}, state={1})".format(
-            self.client_id, self.transitions.state
-        )
+        return type(self).__name__ + "(clientId={0}, state={1})".format(self.client_id, self.transitions.state)
 
     def __getstate__(self):
         state = self.__dict__.copy()

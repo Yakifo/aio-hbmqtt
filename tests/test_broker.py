@@ -80,12 +80,8 @@ async def test_client_connect(broker, mock_plugin_manager):
 
     mock_plugin_manager.assert_has_calls(
         [
-            call().fire_event(
-                EVENT_BROKER_CLIENT_CONNECTED, client_id=client.session.client_id
-            ),
-            call().fire_event(
-                EVENT_BROKER_CLIENT_DISCONNECTED, client_id=client.session.client_id
-            ),
+            call().fire_event(EVENT_BROKER_CLIENT_CONNECTED, client_id=client.session.client_id),
+            call().fire_event(EVENT_BROKER_CLIENT_DISCONNECTED, client_id=client.session.client_id),
         ],
         any_order=True,
     )
@@ -387,9 +383,7 @@ async def test_client_subscribe_publish(broker):
 async def test_client_subscribe_invalid(broker):
     sub_client = MQTTClient()
     await sub_client.connect("mqtt://127.0.0.1")
-    ret = await sub_client.subscribe(
-        [("+", QOS_0), ("+/tennis/#", QOS_0), ("sport+", QOS_0), ("sport/+/player1", QOS_0)]
-    )
+    ret = await sub_client.subscribe([("+", QOS_0), ("+/tennis/#", QOS_0), ("sport+", QOS_0), ("sport/+/player1", QOS_0)])
     assert ret == [QOS_0, QOS_0, 0x80, QOS_0]
 
     await asyncio.sleep(0.1)

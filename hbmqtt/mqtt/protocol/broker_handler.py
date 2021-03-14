@@ -114,9 +114,7 @@ class BrokerProtocolHandler(ProtocolHandler):
         await self._send_packet(connack)
 
     @classmethod
-    async def init_from_connect(
-        cls, reader: ReaderAdapter, writer: WriterAdapter, plugins_manager, loop=None
-    ):
+    async def init_from_connect(cls, reader: ReaderAdapter, writer: WriterAdapter, plugins_manager, loop=None):
         """
 
         :param reader:
@@ -135,16 +133,12 @@ class BrokerProtocolHandler(ProtocolHandler):
 
         if connect.variable_header.will_flag:
             if connect.payload.will_topic is None or connect.payload.will_message is None:
-                raise MQTTException(
-                    "will flag set, but will topic/message not present in payload"
-                )
+                raise MQTTException("will flag set, but will topic/message not present in payload")
 
         if connect.variable_header.reserved_flag:
             raise MQTTException("[MQTT-3.1.2-3] CONNECT reserved flag must be set to 0")
         if connect.proto_name != "MQTT":
-            raise MQTTException(
-                '[MQTT-3.1.2-1] Incorrect protocol name: "%s"' % connect.proto_name
-            )
+            raise MQTTException('[MQTT-3.1.2-1] Incorrect protocol name: "%s"' % connect.proto_name)
 
         connack = None
         error_msg = None
@@ -154,31 +148,20 @@ class BrokerProtocolHandler(ProtocolHandler):
                 format_client_message(address=remote_address, port=remote_port),
                 connect.proto_level,
             )
-            connack = ConnackPacket.build(
-                0, UNACCEPTABLE_PROTOCOL_VERSION
-            )  # [MQTT-3.2.2-4] session_parent=0
+            connack = ConnackPacket.build(0, UNACCEPTABLE_PROTOCOL_VERSION)  # [MQTT-3.2.2-4] session_parent=0
         elif not connect.username_flag and connect.password_flag:
             connack = ConnackPacket.build(0, BAD_USERNAME_PASSWORD)  # [MQTT-3.1.2-22]
         elif connect.username_flag and not connect.password_flag:
             connack = ConnackPacket.build(0, BAD_USERNAME_PASSWORD)  # [MQTT-3.1.2-22]
         elif connect.username_flag and connect.username is None:
-            error_msg = "Invalid username from %s" % (
-                format_client_message(address=remote_address, port=remote_port)
-            )
-            connack = ConnackPacket.build(
-                0, BAD_USERNAME_PASSWORD
-            )  # [MQTT-3.2.2-4] session_parent=0
+            error_msg = "Invalid username from %s" % (format_client_message(address=remote_address, port=remote_port))
+            connack = ConnackPacket.build(0, BAD_USERNAME_PASSWORD)  # [MQTT-3.2.2-4] session_parent=0
         elif connect.password_flag and connect.password is None:
-            error_msg = "Invalid password %s" % (
-                format_client_message(address=remote_address, port=remote_port)
-            )
-            connack = ConnackPacket.build(
-                0, BAD_USERNAME_PASSWORD
-            )  # [MQTT-3.2.2-4] session_parent=0
+            error_msg = "Invalid password %s" % (format_client_message(address=remote_address, port=remote_port))
+            connack = ConnackPacket.build(0, BAD_USERNAME_PASSWORD)  # [MQTT-3.2.2-4] session_parent=0
         elif connect.clean_session_flag is False and (connect.payload.client_id_is_random):
-            error_msg = (
-                "[MQTT-3.1.3-8] [MQTT-3.1.3-9] %s: No client Id provided (cleansession=0)"
-                % (format_client_message(address=remote_address, port=remote_port))
+            error_msg = "[MQTT-3.1.3-8] [MQTT-3.1.3-9] %s: No client Id provided (cleansession=0)" % (
+                format_client_message(address=remote_address, port=remote_port)
             )
             connack = ConnackPacket.build(0, IDENTIFIER_REJECTED)
         if connack is not None:

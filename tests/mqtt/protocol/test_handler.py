@@ -84,9 +84,7 @@ class ProtocolHandlerTest(unittest.TestCase):
         async def test_coro():
             try:
                 s = Session()
-                reader, writer = await asyncio.open_connection(
-                    "127.0.0.1", 8888, loop=self.loop
-                )
+                reader, writer = await asyncio.open_connection("127.0.0.1", 8888, loop=self.loop)
                 reader_adapted, writer_adapted = adapt(reader, writer)
                 handler = ProtocolHandler(self.plugin_manager, loop=self.loop)
                 handler.attach(s, reader_adapted, writer_adapted)
@@ -128,9 +126,7 @@ class ProtocolHandlerTest(unittest.TestCase):
 
         async def test_coro():
             try:
-                reader, writer = await asyncio.open_connection(
-                    "127.0.0.1", 8888, loop=self.loop
-                )
+                reader, writer = await asyncio.open_connection("127.0.0.1", 8888, loop=self.loop)
                 reader_adapted, writer_adapted = adapt(reader, writer)
                 self.handler = ProtocolHandler(self.plugin_manager, loop=self.loop)
                 self.handler.attach(self.session, reader_adapted, writer_adapted)
@@ -181,9 +177,7 @@ class ProtocolHandlerTest(unittest.TestCase):
 
         async def test_coro():
             try:
-                reader, writer = await asyncio.open_connection(
-                    "127.0.0.1", 8888, loop=self.loop
-                )
+                reader, writer = await asyncio.open_connection("127.0.0.1", 8888, loop=self.loop)
                 reader_adapted, writer_adapted = adapt(reader, writer)
                 self.handler = ProtocolHandler(self.plugin_manager, loop=self.loop)
                 self.handler.attach(self.session, reader_adapted, writer_adapted)
@@ -215,16 +209,12 @@ class ProtocolHandlerTest(unittest.TestCase):
 
     def test_receive_qos0(self):
         async def server_mock(reader, writer):
-            packet = PublishPacket.build(
-                "/topic", b"test_data", rand_packet_id(), False, QOS_0, False
-            )
+            packet = PublishPacket.build("/topic", b"test_data", rand_packet_id(), False, QOS_0, False)
             await packet.to_stream(writer)
 
         async def test_coro():
             try:
-                reader, writer = await asyncio.open_connection(
-                    "127.0.0.1", 8888, loop=self.loop
-                )
+                reader, writer = await asyncio.open_connection("127.0.0.1", 8888, loop=self.loop)
                 reader_adapted, writer_adapted = adapt(reader, writer)
                 self.handler = ProtocolHandler(self.plugin_manager, loop=self.loop)
                 self.handler.attach(self.session, reader_adapted, writer_adapted)
@@ -255,9 +245,7 @@ class ProtocolHandlerTest(unittest.TestCase):
     def test_receive_qos1(self):
         async def server_mock(reader, writer):
             try:
-                packet = PublishPacket.build(
-                    "/topic", b"test_data", rand_packet_id(), False, QOS_1, False
-                )
+                packet = PublishPacket.build("/topic", b"test_data", rand_packet_id(), False, QOS_1, False)
                 await packet.to_stream(writer)
                 puback = await PubackPacket.from_stream(reader)
                 self.assertIsNotNone(puback)
@@ -268,9 +256,7 @@ class ProtocolHandlerTest(unittest.TestCase):
 
         async def test_coro():
             try:
-                reader, writer = await asyncio.open_connection(
-                    "127.0.0.1", 8888, loop=self.loop
-                )
+                reader, writer = await asyncio.open_connection("127.0.0.1", 8888, loop=self.loop)
                 reader_adapted, writer_adapted = adapt(reader, writer)
                 self.handler = ProtocolHandler(self.plugin_manager, loop=self.loop)
                 self.handler.attach(self.session, reader_adapted, writer_adapted)
@@ -302,9 +288,7 @@ class ProtocolHandlerTest(unittest.TestCase):
     def test_receive_qos2(self):
         async def server_mock(reader, writer):
             try:
-                packet = PublishPacket.build(
-                    "/topic", b"test_data", rand_packet_id(), False, QOS_2, False
-                )
+                packet = PublishPacket.build("/topic", b"test_data", rand_packet_id(), False, QOS_2, False)
                 await packet.to_stream(writer)
                 pubrec = await PubrecPacket.from_stream(reader)
                 self.assertIsNotNone(pubrec)
@@ -320,9 +304,7 @@ class ProtocolHandlerTest(unittest.TestCase):
 
         async def test_coro():
             try:
-                reader, writer = await asyncio.open_connection(
-                    "127.0.0.1", 8888, loop=self.loop
-                )
+                reader, writer = await asyncio.open_connection("127.0.0.1", 8888, loop=self.loop)
                 reader_adapted, writer_adapted = adapt(reader, writer)
                 self.handler = ProtocolHandler(self.plugin_manager, loop=self.loop)
                 self.handler.attach(self.session, reader_adapted, writer_adapted)
@@ -388,9 +370,7 @@ class ProtocolHandlerTest(unittest.TestCase):
 
         async def test_coro():
             try:
-                reader, writer = await asyncio.open_connection(
-                    "127.0.0.1", 8888, loop=self.loop
-                )
+                reader, writer = await asyncio.open_connection("127.0.0.1", 8888, loop=self.loop)
                 reader_adapted, writer_adapted = adapt(reader, writer)
                 self.handler = ProtocolHandler(self.plugin_manager, loop=self.loop)
                 self.handler.attach(self.session, reader_adapted, writer_adapted)
@@ -404,9 +384,7 @@ class ProtocolHandlerTest(unittest.TestCase):
         self.handler = None
         self.session = Session()
         message = OutgoingApplicationMessage(1, "/topic", QOS_1, b"test_data", False)
-        message.publish_packet = PublishPacket.build(
-            "/topic", b"test_data", rand_packet_id(), False, QOS_1, False
-        )
+        message.publish_packet = PublishPacket.build("/topic", b"test_data", rand_packet_id(), False, QOS_1, False)
         self.session.inflight_out[1] = message
         future = asyncio.Future(loop=self.loop)
 
@@ -439,9 +417,7 @@ class ProtocolHandlerTest(unittest.TestCase):
 
         async def test_coro():
             try:
-                reader, writer = await asyncio.open_connection(
-                    "127.0.0.1", 8888, loop=self.loop
-                )
+                reader, writer = await asyncio.open_connection("127.0.0.1", 8888, loop=self.loop)
                 reader_adapted, writer_adapted = adapt(reader, writer)
                 self.handler = ProtocolHandler(self.plugin_manager, loop=self.loop)
                 self.handler.attach(self.session, reader_adapted, writer_adapted)
@@ -455,9 +431,7 @@ class ProtocolHandlerTest(unittest.TestCase):
         self.handler = None
         self.session = Session()
         message = OutgoingApplicationMessage(1, "/topic", QOS_2, b"test_data", False)
-        message.publish_packet = PublishPacket.build(
-            "/topic", b"test_data", rand_packet_id(), False, QOS_2, False
-        )
+        message.publish_packet = PublishPacket.build("/topic", b"test_data", rand_packet_id(), False, QOS_2, False)
         self.session.inflight_out[1] = message
         future = asyncio.Future(loop=self.loop)
 

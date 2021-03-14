@@ -56,9 +56,7 @@ class MQTTFixedHeader:
             packet_type = (self.packet_type << 4) | self.flags
             out.append(packet_type)
         except OverflowError:
-            raise CodecException(
-                "packet_type encoding exceed 1 byte length: value=%d", packet_type
-            )
+            raise CodecException("packet_type encoding exceed 1 byte length: value=%d", packet_type)
 
         encoded_length = encode_remaining_length(self.remaining_length)
         out.extend(encoded_length)
@@ -98,8 +96,7 @@ class MQTTFixedHeader:
                     multiplier *= 128
                     if multiplier > 128 * 128 * 128:
                         raise MQTTException(
-                            "Invalid remaining length bytes:%s, packet_type=%d"
-                            % (bytes_to_hex_str(buffer), msg_type)
+                            "Invalid remaining length bytes:%s, packet_type=%d" % (bytes_to_hex_str(buffer), msg_type)
                         )
             return value
 
@@ -115,9 +112,7 @@ class MQTTFixedHeader:
             return None
 
     def __repr__(self):
-        return type(self).__name__ + "(length={0}, flags={1})".format(
-            self.remaining_length, hex(self.flags)
-        )
+        return type(self).__name__ + "(length={0}, flags={1})".format(self.remaining_length, hex(self.flags))
 
 
 class MQTTVariableHeader:
@@ -253,8 +248,6 @@ class MQTTPacket:
         return len(self.to_bytes())
 
     def __repr__(self):
-        return type(
-            self
-        ).__name__ + "(ts={0!s}, fixed={1!r}, variable={2!r}, payload={3!r})".format(
+        return type(self).__name__ + "(ts={0!s}, fixed={1!r}, variable={2!r}, payload={3!r})".format(
             self.protocol_ts, self.fixed_header, self.variable_header, self.payload
         )

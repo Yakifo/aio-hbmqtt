@@ -71,9 +71,7 @@ class SubackPacket(MQTTPacket):
             header = MQTTFixedHeader(SUBACK, 0x00)
         else:
             if fixed.packet_type is not SUBACK:
-                raise HBMQTTException(
-                    "Invalid fixed packet type %s for SubackPacket init" % fixed.packet_type
-                )
+                raise HBMQTTException("Invalid fixed packet type %s for SubackPacket init" % fixed.packet_type)
             header = fixed
 
         super().__init__(header)
